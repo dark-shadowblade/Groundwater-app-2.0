@@ -379,3 +379,101 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* Add these styles to your existing globals.css */
+
+/* Custom marker styles */
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Station Detail Page */
+.station-detail-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 5rem;
+}
+
+.station-header {
+  margin-bottom: 2rem;
+}
+
+.back-link {
+  color: #0077cc;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.station-status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.status-critical {
+  background-color: #ff4757;
+  color: white;
+}
+
+.status-warning {
+  background-color: #ffa502;
+  color: white;
+}
+
+.status-normal {
+  background-color: #2ed573;
+  color: white;
+}
+
+.chart-container {
+  height: 300px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.data-table th,
+.data-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.data-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Responsive adjustments for station detail */
+@media (max-width: 768px) {
+  .station-status {
+    flex-direction: column;
+    text-align: center;
+  }
+}
