@@ -12,7 +12,6 @@ export default function DashboardWidgets({ searchQuery }) {
   const [waterLevels, setWaterLevels] = useState([]);
 
   useEffect(() => {
-    // Load data
     fetch('/data/stations.json')
       .then(res => res.json())
       .then(setStations);
@@ -27,46 +26,22 @@ export default function DashboardWidgets({ searchQuery }) {
   );
 
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      gap: '1.5rem',
-      marginBottom: '5rem' // Space for bottom navigation
-    }}>
-      {/* Map Widget */}
-      <div style={{
-        background: 'white',
-        borderRadius: '10px',
-        padding: '1.5rem',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-        gridColumn: 'span 2'
-      }}>
-        <h3 style={{ marginTop: 0, color: '#333' }}>Station Map</h3>
-        <div style={{ height: '400px' }}>
+    <div className="widget-grid">
+      <div className="widget map-widget">
+        <h3 className="widget-title">Station Map</h3>
+        <div className="map-container">
           <MapWidget stations={filteredStations} />
         </div>
       </div>
 
-      {/* Key Data Widget */}
-      <div style={{
-        background: 'white',
-        borderRadius: '10px',
-        padding: '1.5rem',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-      }}>
+      <div className="widget">
         <KeyDataWidget 
           stations={stations} 
           waterLevels={waterLevels} 
         />
       </div>
 
-      {/* Alerts Widget */}
-      <div style={{
-        background: 'white',
-        borderRadius: '10px',
-        padding: '1.5rem',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-      }}>
+      <div className="widget">
         <AlertsWidget 
           stations={stations} 
           waterLevels={waterLevels} 
@@ -74,4 +49,4 @@ export default function DashboardWidgets({ searchQuery }) {
       </div>
     </div>
   );
-    }
+}
