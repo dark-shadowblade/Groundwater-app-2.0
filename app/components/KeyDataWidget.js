@@ -24,10 +24,12 @@ export default function KeyDataWidget({ stations, waterLevels }) {
           </div>
         </Link>
 
-        <div className="metric-card metric-critical">
-          <div className="metric-value">{criticalStations}</div>
-          <div className="metric-label">Critical Stations</div>
-        </div>
+        <Link href="/stations?status=critical" className="metric-link">
+          <div className="metric-card metric-critical">
+            <div className="metric-value">{criticalStations}</div>
+            <div className="metric-label">Critical Stations</div>
+          </div>
+        </Link>
 
         <div className="metric-card metric-average">
           <div className="metric-value">{avgWaterLevel}m</div>
