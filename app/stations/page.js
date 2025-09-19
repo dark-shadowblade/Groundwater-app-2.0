@@ -101,6 +101,14 @@ export default function StationsList() {
     });
   };
 
+  // Get districts based on selected state
+  const filteredDistricts = filters.state
+    ? [...new Set(stations
+        .filter(station => station.state === filters.state)
+        .map(station => station.district)
+      )].sort()
+    : districts;
+
   return (
     <div className="stations-container">
       <Link href="/dashboard" className="back-link">
@@ -117,72 +125,82 @@ export default function StationsList() {
         <div className="filter-row">
           <div className="filter-group">
             <label className="filter-label">State</label>
-            <select
-              value={filters.state}
-              onChange={(e) => handleFilterChange('state', e.target.value)}
-              className="filter-select"
-            >
-              <option value="">All States</option>
-              {states.map(state => (
-                <option key={state} value={state}>{state}</option>
-              ))}
-            </select>
+            <div className="custom-select">
+              <select
+                value={filters.state}
+                onChange={(e) => handleFilterChange('state', e.target.value)}
+                className="filter-select"
+              >
+                <option value="">All States</option>
+                {states.map(state => (
+                  <option key={state} value={state}>{state}</option>
+                ))}
+              </select>
+              <span className="select-arrow">▼</span>
+            </div>
           </div>
 
           <div className="filter-group">
             <label className="filter-label">District</label>
-            <select
-              value={filters.district}
-              onChange={(e) => handleFilterChange('district', e.target.value)}
-              className="filter-select"
-            >
-              <option value="">All Districts</option>
-              {districts.map(district => (
-                <option key={district} value={district}>{district}</option>
-              ))}
-            </select>
+            <div className="custom-select">
+              <select
+                value={filters.district}
+                onChange={(e) => handleFilterChange('district', e.target.value)}
+                className="filter-select"
+                disabled={!filters.state && filteredDistricts.length > 0}
+              >
+                <option value="">All Districts</option>
+                {filteredDistricts.map(district => (
+                  <option key={district} value={district}>{district}</option>
+                ))}
+              </select>
+              <span className="select-arrow">▼</span>
+            </div>
+            {!filters.state && (
+              <div className="filter-hint">Select a state first</div>
+            )}
           </div>
 
           <div className="filter-group">
             <label className="filter-label">Status</label>
-            <select
-              value={filters.status}
-              onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="filter-select"
-            >
-              <option value="">All Status</option>
-              <option value="Normal">Normal</option>
-              <option value="Warning">Warning</option>
-              <option value="Critical">Critical</option>
-            </select>
+            <div className="custom-select">
+              <select
+                value={filters.status}
+                onChange={(e) => handleFilterChange('status', e.target.value)}
+                className="filter-select"
+              >
+                <option value="">All Status</option>
+                <option value="Normal">Normal</option>
+                <option value="Warning">Warning</option>
+                <option value="Critical">Critical</option>
+                <option value="Unknown">Unknown</option>
+              </select>
+              <span className="select-arrow">▼</span>
+            </div>
           </div>
         </div>
 
         <div className="filter-row">
           <div className="filter-group">
             <label className="filter-label">Search Stations</label>
-            <input
-              type="text"
-              placeholder="Search by name, district, or state..."
-              value={filters.search}
-              onChange={(e) => handleFilterChange('search', e.target.value)}
-              className="filter-input"
-            />
+            <div className="search-input-container">
+              <input
+                type="text"
+                placeholder="Search by name, district, or state..."
+                value={filters.search}
+                onChange={(e) => handleFilterChange('search', e.target.value)}
+                className="filter-input"
+              />
+              <span className="search-icon">🔍</span>
+            </div>
           </div>
 
           <div className="filter-group" style={{ display: 'flex', alignItems: 'flex-end' }}>
             <button
               onClick={clearFilters}
-              style={{
-                padding: '0.75rem 1.5rem',
-                background: '#ff4757',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer'
-              }}
+              className="clear-filters-btn"
             >
-              Clear Filters
+              Clear All Filters
             </button>
           </div>
         </div>
@@ -195,15 +213,7 @@ export default function StationsList() {
             <p>No stations found matching your filters.</p>
             <button
               onClick={clearFilters}
-              style={{
-                padding: '0.75rem 1.5rem',
-                background: '#0077cc',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                marginTop: '1rem'
-              }}
+              className="clear-filters-btn primary"
             >
               Clear All Filters
             </button>
