@@ -11,47 +11,26 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Simulate login - in real app, you'd verify credentials
+    // Simulate login
     localStorage.setItem('userRole', role);
     localStorage.setItem('isLoggedIn', 'true');
     router.push('/dashboard');
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-    }}>
-      <div style={{
-        background: 'white',
-        padding: '2rem',
-        borderRadius: '10px',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-        width: '100%',
-        maxWidth: '400px'
-      }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '1.5rem', color: '#333' }}>
-          Groundwater Monitoring
-        </h2>
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className="login-title">Groundwater Monitoring</h2>
         
         <form onSubmit={handleLogin}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+          <div className="form-group">
+            <label className="form-label">
               Select Role:
             </label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '5px',
-                fontSize: '1rem'
-              }}
+              className="form-select"
             >
               <option value="researcher">Researcher</option>
               <option value="admin">Administrator</option>
@@ -59,8 +38,8 @@ export default function Login() {
             </select>
           </div>
 
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+          <div className="form-group">
+            <label className="form-label">
               Email:
             </label>
             <input
@@ -69,18 +48,12 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '5px',
-                fontSize: '1rem'
-              }}
+              className="form-input"
             />
           </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+          <div className="form-group">
+            <label className="form-label">
               Password:
             </label>
             <input
@@ -89,35 +62,19 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '5px',
-                fontSize: '1rem'
-              }}
+              className="form-input"
             />
           </div>
 
           <button
             type="submit"
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              fontSize: '1rem',
-              fontWeight: 'bold',
-              cursor: 'pointer'
-            }}
+            className="login-button"
           >
             Login
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: '1rem', color: '#666' }}>
+        <p className="login-demo">
           Demo: Use any email/password to login
         </p>
       </div>
