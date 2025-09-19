@@ -631,3 +631,8 @@ body {
     grid-template-columns: 1fr 1fr;
   }
 }
+/* Add this to your existing status classes */
+.status-unknown {
+  background-color: #666;
+  color: white;
+}
