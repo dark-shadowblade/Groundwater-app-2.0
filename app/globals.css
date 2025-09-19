@@ -636,3 +636,131 @@ body {
   background-color: #666;
   color: white;
 }
+/* Add these styles to your existing globals.css */
+
+/* Custom Select Styles */
+.custom-select {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.custom-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.custom-select select:focus {
+  outline: none;
+  border-color: #0077cc;
+  box-shadow: 0 0 0 2px rgba(0, 119, 204, 0.1);
+}
+
+/* Search Input Styles */
+.search-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+}
+
+.search-input-container input {
+  padding-right: 2.5rem;
+}
+
+/* Filter Hint */
+.filter-hint {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+/* Clear Filters Button */
+.clear-filters-btn {
+  padding: 0.75rem 1.5rem;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.clear-filters-btn:hover {
+  background: #5a6268;
+}
+
+.clear-filters-btn.primary {
+  background: #0077cc;
+}
+
+.clear-filters-btn.primary:hover {
+  background: #005fa3;
+}
+
+/* Dropdown Options Styling */
+.custom-select select option {
+  padding: 0.5rem;
+  background: white;
+  color: #333;
+}
+
+.custom-select select option:hover {
+  background: #0077cc;
+  color: white;
+}
+
+.custom-select select:disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Responsive dropdowns */
+@media (max-width: 768px) {
+  .custom-select {
+    width: 100%;
+  }
+  
+  .clear-filters-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Focus states for accessibility */
+.custom-select select:focus-visible {
+  outline: 2px solid #0077cc;
+  outline-offset: 2px;
+}
+
+/* Hover states */
+.custom-select select:hover {
+  border-color: #0077cc;
+  }
