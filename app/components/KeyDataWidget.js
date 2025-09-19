@@ -13,42 +13,21 @@ export default function KeyDataWidget({ stations, waterLevels }) {
 
   return (
     <div>
-      <h3 style={{ marginTop: 0, color: '#333' }}>Key Metrics</h3>
-      <div style={{ display: 'grid', gap: '1rem' }}>
-        <div style={{
-          background: '#e3f2fd',
-          padding: '1rem',
-          borderRadius: '8px',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2' }}>
-            {totalStations}
-          </div>
-          <div style={{ color: '#666' }}>Total Stations</div>
+      <h3 className="widget-title">Key Metrics</h3>
+      <div className="metrics-grid">
+        <div className="metric-card metric-total">
+          <div className="metric-value">{totalStations}</div>
+          <div className="metric-label">Total Stations</div>
         </div>
 
-        <div style={{
-          background: '#fff3e0',
-          padding: '1rem',
-          borderRadius: '8px',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f57c00' }}>
-            {criticalStations}
-          </div>
-          <div style={{ color: '#666' }}>Critical Stations</div>
+        <div className="metric-card metric-critical">
+          <div className="metric-value">{criticalStations}</div>
+          <div className="metric-label">Critical Stations</div>
         </div>
 
-        <div style={{
-          background: '#e8f5e9',
-          padding: '1rem',
-          borderRadius: '8px',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#388e3c' }}>
-            {avgWaterLevel}m
-          </div>
-          <div style={{ color: '#666' }}>Avg Water Level</div>
+        <div className="metric-card metric-average">
+          <div className="metric-value">{avgWaterLevel}m</div>
+          <div className="metric-label">Avg Water Level</div>
         </div>
       </div>
     </div>
