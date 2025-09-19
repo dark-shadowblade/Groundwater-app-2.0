@@ -30,7 +30,7 @@ export default function DashboardWidgets({ searchQuery }) {
       <div className="widget map-widget">
         <h3 className="widget-title">Station Map</h3>
         <div className="map-container">
-          <MapWidget stations={filteredStations} />
+          <MapWidget stations={filteredStations} waterLevels={waterLevels} />
         </div>
       </div>
 
