@@ -1,22 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import FilterDropdown from '../components/FilterDropdown';
 
 export default function AlertsList() {
   const [stations, setStations] = useState([]);
   const [waterLevels, setWaterLevels] = useState([]);
-  const [filteredAlerts, setFilteredAlerts] = useState([]);
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const [filteredStations, setFilteredStations] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
 
   const [filters, setFilters] = useState({
-    state: searchParams.get('state') || '',
-    district: searchParams.get('district') || '',
-    severity: searchParams.get('severity') || '',
-    search: searchParams.get('search') || ''
+    state: '',
+    district: '',
+    search: ''
   });
 
   useEffect(() => {
@@ -29,46 +26,35 @@ export default function AlertsList() {
   }, []);
 
   useEffect(() => {
-    // Update URL with current filters
-    const params = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) params.set(key, value);
-    });
-    router.replace(`/alerts?${params.toString()}`, { scroll: false });
-  }, [filters, router]);
-
-  useEffect(() => {
-    // Get all stations with alerts
-    const alertStations = stations.filter(station => {
+    // Get only critical stations (water level < 11)
+    const criticalStations = stations.filter(station => {
       const stationLevels = waterLevels.filter(w => w.station_id === station.id);
-      const hasCritical = stationLevels.some(level => level.water_level_m < 11);
-      const hasWarning = stationLevels.some(level => level.water_level_m >= 11 && level.water_level_m < 12);
-      
-      if (filters.severity === 'critical') {
-        return hasCritical;
-      } else if (filters.severity === 'warning') {
-        return hasWarning;
-      }
-      return hasCritical || hasWarning;
+      return stationLevels.some(level => level.water_level_m < 11);
     });
 
-    // Apply additional filters
-    let result = alertStations.filter(station => {
+    // Apply filters
+    let result = criticalStations.filter(station => {
       if (filters.state && station.state !== filters.state) return false;
       if (filters.district && station.district !== filters.district) return false;
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
         return station.name.toLowerCase().includes(searchTerm) ||
-               station.district.toLowerCase().includes(searchTerm) ||
-               station.state.toLowerCase().includes(searchTerm);
+               station.district.toLowerCase().includes(searchTerm);
       }
       return true;
     });
 
-    setFilteredAlerts(result);
+    setFilteredStations(result);
   }, [stations, waterLevels, filters]);
 
-  // Get unique states and districts
+  const getLatestWaterLevel = (stationId) => {
+    const stationReadings = waterLevels
+      .filter(w => w.station_id === stationId)
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    return stationReadings.length > 0 ? stationReadings[0].water_level_m : null;
+  };
+
   const states = [...new Set(stations.map(station => station.state))].sort();
   const districts = [...new Set(stations.map(station => station.district))].sort();
 
@@ -83,32 +69,11 @@ export default function AlertsList() {
     setFilters({
       state: '',
       district: '',
-      severity: '',
       search: ''
     });
   };
 
-  const getLatestWaterLevel = (stationId) => {
-    const stationReadings = waterLevels
-      .filter(w => w.station_id === stationId)
-      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-    
-    return stationReadings.length > 0 ? stationReadings[0] : null;
-  };
-
-  const getStatusText = (level) => {
-    if (!level) return 'Unknown';
-    if (level < 11) return 'Critical';
-    if (level < 12) return 'Warning';
-    return 'Normal';
-  };
-
-  const getStatusColor = (level) => {
-    if (!level) return '#666';
-    if (level < 11) return '#ff4757';
-    if (level < 12) return '#ffa502';
-    return '#2ed573';
-  };
+  const appliedFiltersCount = Object.values(filters).filter(value => value !== '').length;
 
   return (
     <div className="stations-container">
@@ -116,92 +81,127 @@ export default function AlertsList() {
         ← Back to Dashboard
       </Link>
 
-      <h1>Alerts & Critical Stations</h1>
+      <div className="page-header">
+        <h1>Critical Stations</h1>
+        <div className="header-actions">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="filter-toggle-btn"
+          >
+            <span>🔍 Filters</span>
+            {appliedFiltersCount > 0 && (
+              <span className="filter-count">{appliedFiltersCount}</span>
+            )}
+          </button>
+        </div>
+      </div>
+
       <p style={{ color: '#666', marginBottom: '2rem' }}>
-        {filteredAlerts.length} alerting stations found
+        {filteredStations.length} critical stations found
       </p>
 
-      {/* Filters */}
-      <div className="filters-container">
-        <div className="filter-row">
-          <FilterDropdown
-            label="State"
-            value={filters.state}
-            onChange={(value) => handleFilterChange('state', value)}
-            options={states.map(state => ({ value: state, label: state }))}
-            placeholder="All States"
-          />
-
-          <FilterDropdown
-            label="District"
-            value={filters.district}
-            onChange={(value) => handleFilterChange('district', value)}
-            options={districts.map(district => ({ value: district, label: district }))}
-            placeholder="All Districts"
-          />
-
-          <FilterDropdown
-            label="Severity"
-            value={filters.severity}
-            onChange={(value) => handleFilterChange('severity', value)}
-            options={[
-              { value: '', label: 'All Alerts' },
-              { value: 'critical', label: 'Critical Only' },
-              { value: 'warning', label: 'Warning Only' }
-            ]}
-            placeholder="All Severity"
-          />
+      {/* Filter Sidebar - Simplified for critical stations */}
+      <div className={`filter-sidebar ${showFilters ? 'open' : ''}`}>
+        <div className="filter-header">
+          <h3>Filters</h3>
+          <button onClick={() => setShowFilters(false)} className="close-filters">
+            ×
+          </button>
         </div>
 
-        <div className="filter-row">
-          <div className="filter-group">
-            <label className="filter-label">Search Stations</label>
-            <div className="search-input-container">
-              <input
-                type="text"
-                placeholder="Search alerting stations..."
-                value={filters.search}
-                onChange={(e) => handleFilterChange('search', e.target.value)}
-                className="filter-input"
-              />
-              <span className="search-icon">🔍</span>
+        <div className="filter-content">
+          {/* State Filter */}
+          <div className="filter-section">
+            <h4>State</h4>
+            <div className="filter-options">
+              {states.map(state => (
+                <label key={state} className="filter-option">
+                  <input
+                    type="radio"
+                    name="state"
+                    value={state}
+                    checked={filters.state === state}
+                    onChange={(e) => handleFilterChange('state', e.target.value)}
+                  />
+                  <span>{state}</span>
+                </label>
+              ))}
+              <label className="filter-option">
+                <input
+                  type="radio"
+                  name="state"
+                  value=""
+                  checked={filters.state === ''}
+                  onChange={(e) => handleFilterChange('state', '')}
+                />
+                <span>All States</span>
+              </label>
             </div>
           </div>
 
-          <div className="filter-group" style={{ display: 'flex', alignItems: 'flex-end' }}>
-            <button
-              onClick={clearFilters}
-              className="clear-filters-btn"
-            >
-              Clear All Filters
+          {/* District Filter */}
+          <div className="filter-section">
+            <h4>District</h4>
+            <div className="filter-options">
+              {districts.map(district => (
+                <label key={district} className="filter-option">
+                  <input
+                    type="radio"
+                    name="district"
+                    value={district}
+                    checked={filters.district === district}
+                    onChange={(e) => handleFilterChange('district', e.target.value)}
+                  />
+                  <span>{district}</span>
+                </label>
+              ))}
+              <label className="filter-option">
+                <input
+                  type="radio"
+                  name="district"
+                  value=""
+                  checked={filters.district === ''}
+                  onChange={(e) => handleFilterChange('district', '')}
+                />
+                <span>All Districts</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="filter-actions">
+            <button onClick={clearFilters} className="clear-filters-btn">
+              Clear All
+            </button>
+            <button onClick={() => setShowFilters(false)} className="apply-filters-btn">
+              Apply Filters
             </button>
           </div>
         </div>
       </div>
 
-      {/* Alerts List */}
+      {/* Overlay when filters are open */}
+      {showFilters && (
+        <div className="filter-overlay" onClick={() => setShowFilters(false)} />
+      )}
+
+      {/* Stations Grid */}
       <div className="stations-grid">
-        {filteredAlerts.length === 0 ? (
+        {filteredStations.length === 0 ? (
           <div className="no-stations">
-            <p>No alerting stations found matching your filters.</p>
-            <button
-              onClick={clearFilters}
-              className="clear-filters-btn primary"
-            >
+            <p>No critical stations found matching your filters.</p>
+            <button onClick={clearFilters} className="clear-filters-btn primary">
               Clear All Filters
             </button>
           </div>
         ) : (
-          filteredAlerts.map(station => {
-            const latestReading = getLatestWaterLevel(station.id);
-            const status = latestReading ? getStatusText(latestReading.water_level_m) : 'Unknown';
-            const statusColor = latestReading ? getStatusColor(latestReading.water_level_m) : '#666';
+          filteredStations.map(station => {
+            const latestLevel = getLatestWaterLevel(station.id);
 
             return (
               <Link
                 key={station.id}
                 href={`/station/${station.id}`}
-                className="station-card"
+                className="station-card critical"
               >
                 <div className="station-header">
                   <div>
@@ -210,38 +210,26 @@ export default function AlertsList() {
                       {station.district}, {station.state}
                     </p>
                   </div>
-                  <span
-                    className="station-status"
-                    style={{ backgroundColor: statusColor, color: 'white' }}
-                  >
-                    {status}
+                  <span className="station-status status-critical">
+                    Critical
                   </span>
                 </div>
 
-                {latestReading && (
-                  <div className="station-details">
-                    <div className="detail-item">
-                      <div className="detail-value" style={{ color: statusColor }}>
-                        {latestReading.water_level_m}m
-                      </div>
-                      <div className="detail-label">Current Level</div>
+                <div className="station-details">
+                  <div className="detail-item">
+                    <div className="detail-value" style={{ color: '#ff4757' }}>
+                      {latestLevel ? `${latestLevel}m` : 'N/A'}
                     </div>
-
-                    <div className="detail-item">
-                      <div className="detail-value">
-                        {new Date(latestReading.timestamp).toLocaleDateString()}
-                      </div>
-                      <div className="detail-label">Last Reading</div>
-                    </div>
-
-                    <div className="detail-item">
-                      <div className="detail-value">
-                        {waterLevels.filter(w => w.station_id === station.id).length}
-                      </div>
-                      <div className="detail-label">Total Readings</div>
-                    </div>
+                    <div className="detail-label">Current Level</div>
                   </div>
-                )}
+
+                  <div className="detail-item">
+                    <div className="detail-value">
+                      {waterLevels.filter(w => w.station_id === station.id).length}
+                    </div>
+                    <div className="detail-label">Readings</div>
+                  </div>
+                </div>
               </Link>
             );
           })
