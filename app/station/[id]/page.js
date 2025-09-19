@@ -52,41 +52,35 @@ export default function StationDetail() {
   useEffect(() => {
     if (waterLevels.length === 0) return;
 
-    const now = new Date();
     let filtered = waterLevels;
 
     switch (timeFilter) {
       case '7days':
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(now.getDate() - 7);
-        filtered = waterLevels.filter(level => new Date(level.timestamp) >= sevenDaysAgo);
+        // Show last 7 days of available data (from the end of the dataset)
+        filtered = waterLevels.slice(-28); // 4 readings per day * 7 days = 28 readings
         break;
       case '30days':
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(now.getDate() - 30);
-        filtered = waterLevels.filter(level => new Date(level.timestamp) >= thirtyDaysAgo);
+        // Show last 30 days of available data
+        filtered = waterLevels.slice(-120); // 4 readings per day * 30 days = 120 readings
         break;
       case '3months':
-        const threeMonthsAgo = new Date();
-        threeMonthsAgo.setMonth(now.getMonth() - 3);
-        filtered = waterLevels.filter(level => new Date(level.timestamp) >= threeMonthsAgo);
+        // Show approximately last 3 months (90 days)
+        filtered = waterLevels.slice(-360); // 4 readings per day * 90 days = 360 readings
         break;
       case '6months':
-        const sixMonthsAgo = new Date();
-        sixMonthsAgo.setMonth(now.getMonth() - 6);
-        filtered = waterLevels.filter(level => new Date(level.timestamp) >= sixMonthsAgo);
+        // Show approximately last 6 months (180 days)
+        filtered = waterLevels.slice(-720); // 4 readings per day * 180 days = 720 readings
         break;
       case '1year':
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(now.getFullYear() - 1);
-        filtered = waterLevels.filter(level => new Date(level.timestamp) >= oneYearAgo);
+        // Show approximately last 1 year (365 days)
+        filtered = waterLevels.slice(-1460); // 4 readings per day * 365 days = 1460 readings
         break;
       case 'season':
-        // Simple seasonal filter (you can enhance this)
-        const currentMonth = new Date().getMonth();
+        // Show data from specific months (e.g., monsoon season)
         filtered = waterLevels.filter(level => {
           const month = new Date(level.timestamp).getMonth();
-          return month >= 2 && month <= 5; // Spring months example
+          // June to September (monsoon season in many regions)
+          return month >= 5 && month <= 8;
         });
         break;
       default:
@@ -108,6 +102,29 @@ export default function StationDetail() {
     if (level < 11) return 'Critical';
     if (level < 12) return 'Warning';
     return 'Normal';
+  };
+
+  // Helper function to format date range for display
+  const getTimeRangeText = () => {
+    if (filteredLevels.length === 0) return 'No data available';
+    
+    const firstDate = new Date(filteredLevels[0].timestamp);
+    const lastDate = new Date(filteredLevels[filteredLevels.length - 1].timestamp);
+    
+    return `${firstDate.toLocaleDateString()} - ${lastDate.toLocaleDateString()}`;
+  };
+
+  // Get the actual time period name based on filter
+  const getTimePeriodName = () => {
+    switch (timeFilter) {
+      case '7days': return 'Last 7 Days';
+      case '30days': return 'Last 30 Days';
+      case '3months': return 'Last 3 Months';
+      case '6months': return 'Last 6 Months';
+      case '1year': return 'Last Year';
+      case 'season': return 'Seasonal Data (June-September)';
+      default: return 'All Time Data';
+    }
   };
 
   if (loading) {
@@ -171,7 +188,7 @@ export default function StationDetail() {
               { value: '3months', label: 'Last 3 Months' },
               { value: '6months', label: 'Last 6 Months' },
               { value: '1year', label: 'Last Year' },
-              { value: 'season', label: 'Seasonal View' }
+              { value: 'season', label: 'Monsoon Season' }
             ]}
             placeholder="Select Time Period"
           />
@@ -180,13 +197,11 @@ export default function StationDetail() {
         {/* Time Period Info */}
         <div style={{ marginTop: '1rem', padding: '1rem', background: '#f8f9fa', borderRadius: '8px' }}>
           <p style={{ margin: 0, color: '#666', fontSize: '0.9rem' }}>
-            <strong>Showing:</strong> {timeFilter === 'all' ? 'All time data' : 
-              timeFilter === '7days' ? 'Last 7 days' :
-              timeFilter === '30days' ? 'Last 30 days' :
-              timeFilter === '3months' ? 'Last 3 months' :
-              timeFilter === '6months' ? 'Last 6 months' :
-              timeFilter === '1year' ? 'Last year' : 'Seasonal data'}
+            <strong>Showing:</strong> {getTimePeriodName()}
             {' '}({filteredLevels.length} readings)
+          </p>
+          <p style={{ margin: '0.5rem 0 0 0', color: '#666', fontSize: '0.8rem' }}>
+            <strong>Date Range:</strong> {getTimeRangeText()}
           </p>
         </div>
       </div>
@@ -202,11 +217,11 @@ export default function StationDetail() {
                 dataKey="timestamp" 
                 tickFormatter={(value) => {
                   const date = new Date(value);
-                  if (timeFilter === '7days' || timeFilter === '30days') {
+                  if (timeFilter === '7days') {
                     return date.toLocaleDateString('en-US', { 
                       month: 'short', 
                       day: 'numeric',
-                      hour: timeFilter === '7days' ? '2-digit' : undefined
+                      hour: '2-digit'
                     });
                   }
                   return date.toLocaleDateString('en-US', { 
