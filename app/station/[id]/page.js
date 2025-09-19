@@ -57,23 +57,28 @@ export default function StationDetail() {
 
     switch (timeFilter) {
       case '7days':
-        const sevenDaysAgo = new Date(now.setDate(now.getDate() - 7));
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(now.getDate() - 7);
         filtered = waterLevels.filter(level => new Date(level.timestamp) >= sevenDaysAgo);
         break;
       case '30days':
-        const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(now.getDate() - 30);
         filtered = waterLevels.filter(level => new Date(level.timestamp) >= thirtyDaysAgo);
         break;
       case '3months':
-        const threeMonthsAgo = new Date(now.setMonth(now.getMonth() - 3));
+        const threeMonthsAgo = new Date();
+        threeMonthsAgo.setMonth(now.getMonth() - 3);
         filtered = waterLevels.filter(level => new Date(level.timestamp) >= threeMonthsAgo);
         break;
       case '6months':
-        const sixMonthsAgo = new Date(now.setMonth(now.getMonth() - 6));
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(now.getMonth() - 6);
         filtered = waterLevels.filter(level => new Date(level.timestamp) >= sixMonthsAgo);
         break;
       case '1year':
-        const oneYearAgo = new Date(now.setFullYear(now.getFullYear() - 1));
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(now.getFullYear() - 1);
         filtered = waterLevels.filter(level => new Date(level.timestamp) >= oneYearAgo);
         break;
       case 'season':
@@ -171,18 +176,44 @@ export default function StationDetail() {
             placeholder="Select Time Period"
           />
         </div>
+        
+        {/* Time Period Info */}
+        <div style={{ marginTop: '1rem', padding: '1rem', background: '#f8f9fa', borderRadius: '8px' }}>
+          <p style={{ margin: 0, color: '#666', fontSize: '0.9rem' }}>
+            <strong>Showing:</strong> {timeFilter === 'all' ? 'All time data' : 
+              timeFilter === '7days' ? 'Last 7 days' :
+              timeFilter === '30days' ? 'Last 30 days' :
+              timeFilter === '3months' ? 'Last 3 months' :
+              timeFilter === '6months' ? 'Last 6 months' :
+              timeFilter === '1year' ? 'Last year' : 'Seasonal data'}
+            {' '}({filteredLevels.length} readings)
+          </p>
+        </div>
       </div>
 
       {/* Water Level Chart */}
       <div style={{ marginBottom: '2rem' }}>
-        <h2>Water Level Trends ({filteredLevels.length} readings)</h2>
+        <h2>Water Level Trends</h2>
         <div className="chart-container">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={filteredLevels}>
               <CartesianGrid stroke="#f5f5f5" />
               <XAxis 
                 dataKey="timestamp" 
-                tickFormatter={(value) => new Date(value).toLocaleDateString()}
+                tickFormatter={(value) => {
+                  const date = new Date(value);
+                  if (timeFilter === '7days' || timeFilter === '30days') {
+                    return date.toLocaleDateString('en-US', { 
+                      month: 'short', 
+                      day: 'numeric',
+                      hour: timeFilter === '7days' ? '2-digit' : undefined
+                    });
+                  }
+                  return date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric' 
+                  });
+                }}
                 fontSize={12}
               />
               <YAxis 
@@ -199,7 +230,7 @@ export default function StationDetail() {
                 stroke="#0077cc" 
                 fill="rgba(0, 119, 204, 0.1)"
                 strokeWidth={2}
-                dot={{ r: 2 }}
+                dot={{ r: timeFilter === 'all' || timeFilter === '1year' ? 0 : 2 }}
                 activeDot={{ r: 5 }}
               />
             </AreaChart>
