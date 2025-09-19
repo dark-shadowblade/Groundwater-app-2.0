@@ -39,7 +39,8 @@ export default function AlertsList() {
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
         return station.name.toLowerCase().includes(searchTerm) ||
-               station.district.toLowerCase().includes(searchTerm);
+               station.district.toLowerCase().includes(searchTerm) ||
+               station.state.toLowerCase().includes(searchTerm);
       }
       return true;
     });
@@ -100,7 +101,7 @@ export default function AlertsList() {
         {filteredStations.length} critical stations found
       </p>
 
-      {/* Filter Sidebar - Simplified for critical stations */}
+      {/* Filter Sidebar - Only State and District for critical stations */}
       <div className={`filter-sidebar ${showFilters ? 'open' : ''}`}>
         <div className="filter-header">
           <h3>Filters</h3>
@@ -159,7 +160,7 @@ export default function AlertsList() {
                 <input
                   type="radio"
                   name="district"
-                  value=""
+                    value=""
                   checked={filters.district === ''}
                   onChange={(e) => handleFilterChange('district', '')}
                 />
