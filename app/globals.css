@@ -864,3 +864,39 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+/* Add these styles */
+
+/* Alert item links */
+.alert-item-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.alert-item-link:hover .alert-item {
+  background-color: #ffd7d7;
+  transform: translateX(4px);
+}
+
+.alert-item {
+  transition: all 0.2s ease;
+}
+
+/* Time period filters in station detail */
+.station-detail-container .filters-container {
+  margin-bottom: 1.5rem;
+}
+
+.station-detail-container .filters-container h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+/* Area chart styling */
+.recharts-area {
+  opacity: 0.8;
+}
+
+.recharts-area-curve {
+  stroke-width: 2;
+}
