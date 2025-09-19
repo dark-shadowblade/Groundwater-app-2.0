@@ -149,7 +149,7 @@ body {
   right: -5px;
   background: #ff4757;
   color: white;
-  border-radius: 50%;
+  border-radius: '50%';
   width: 18px;
   height: 18px;
   font-size: 0.7rem;
@@ -216,6 +216,12 @@ body {
   border-radius: 8px;
 }
 
+/* Custom marker styles */
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
 /* Key Data Widget */
 .metrics-grid {
   display: grid;
@@ -252,6 +258,18 @@ body {
 .metric-average {
   background: #e8f5e9;
   color: #388e3c;
+}
+
+/* Metric link styles */
+.metric-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.metric-link:hover {
+  transform: translateY(-2px);
 }
 
 /* Alerts Widget */
@@ -335,59 +353,6 @@ body {
   font-size: 0.7rem;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .widget-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .map-widget {
-    grid-column: span 1;
-  }
-  
-  .header-content {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
-  
-  .header-controls {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .search-input {
-    width: 100%;
-    max-width: 250px;
-  }
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-/* Add these styles to your existing globals.css */
-
-/* Custom marker styles */
-.custom-marker {
-  background: transparent !important;
-  border: none !important;
-}
-
 /* Station Detail Page */
 .station-detail-container {
   padding: 2rem;
@@ -438,6 +403,11 @@ body {
   color: white;
 }
 
+.status-unknown {
+  background-color: #666;
+  color: white;
+}
+
 .chart-container {
   height: 300px;
   background-color: white;
@@ -468,28 +438,6 @@ body {
 
 .data-table tr:last-child td {
   border-bottom: none;
-}
-
-/* Responsive adjustments for station detail */
-@media (max-width: 768px) {
-  .station-status {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-/* Add these styles to your existing globals.css */
-
-/* Metric link styles */
-.metric-link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-  transition: transform 0.2s ease;
-}
-
-.metric-link:hover {
-  transform: translateY(-2px);
 }
 
 /* Stations List Page */
@@ -612,32 +560,6 @@ body {
   color: #666;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .filter-row {
-    flex-direction: column;
-  }
-  
-  .filter-group {
-    min-width: 100%;
-  }
-  
-  .station-header {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .station-details {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-/* Add this to your existing status classes */
-.status-unknown {
-  background-color: #666;
-  color: white;
-}
-/* Add these styles to your existing globals.css */
-
 /* Custom Select Styles */
 .custom-select {
   position: relative;
@@ -724,6 +646,11 @@ body {
   background: #005fa3;
 }
 
+.clear-filters-btn.small {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+}
+
 /* Dropdown Options Styling */
 .custom-select select option {
   padding: 0.5rem;
@@ -742,16 +669,97 @@ body {
   cursor: not-allowed;
 }
 
-/* Responsive dropdowns */
-@media (max-width: 768px) {
-  .custom-select {
-    width: 100%;
-  }
-  
-  .clear-filters-btn {
-    width: 100%;
-    text-align: center;
-  }
+/* Widget Header */
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.station-count {
+  font-size: 0.9rem;
+  color: #666;
+  background: #f8f9fa;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+}
+
+/* Compact Filters */
+.filters-container.compact {
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filters-container.compact .filter-row {
+  margin-bottom: 0.5rem;
+}
+
+/* Stations List Compact */
+.stations-list.compact {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.station-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.2s ease;
+}
+
+.station-item:hover {
+  background-color: #f8f9fa;
+}
+
+.station-item:last-child {
+  border-bottom: none;
+}
+
+.station-info {
+  flex: 1;
+}
+
+.station-info .station-name {
+  font-weight: 600;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.station-info .station-location {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.station-status .status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Widget Footer */
+.widget-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+.view-all-link {
+  color: #0077cc;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
 }
 
 /* Focus states for accessibility */
@@ -763,4 +771,96 @@ body {
 /* Hover states */
 .custom-select select:hover {
   border-color: #0077cc;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .widget-grid {
+    grid-template-columns: 1fr;
   }
+  
+  .map-widget {
+    grid-column: span 1;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .header-controls {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .search-input {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .station-status {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .filter-row {
+    flex-direction: column;
+  }
+  
+  .filter-group {
+    min-width: 100%;
+  }
+  
+  .station-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .station-details {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .widget-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .station-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .station-status {
+    align-self: flex-end;
+  }
+
+  .custom-select {
+    width: 100%;
+  }
+  
+  .clear-filters-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
